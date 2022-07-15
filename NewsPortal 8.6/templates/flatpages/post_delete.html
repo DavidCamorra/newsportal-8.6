@@ -1,0 +1,33 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+News
+{% endblock title %}
+   <hr>
+{% block content %}
+
+<h4>Вы действительно хотите удалить данный пост?</h4>
+
+       <table>
+           <thead>
+           <tr>
+               <td> <u>Название </u></td>
+               <td> <u>Дата добавления </u> </td>
+               <td> <u>Текст статьи </u> </td>
+           </tr>
+        </thead>
+           <tr>
+               <td>{{ post.name|censor }}</td>
+               <td>{{ post.add_time|date:'d M Y' }}</td>
+               <td>{{ post.text|truncatewords:20|censor }}</td>
+           </tr>
+
+
+       </table>
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
+
+{% endblock content %}

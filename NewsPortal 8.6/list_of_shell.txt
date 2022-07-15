@@ -1,0 +1,51 @@
+from portal.models import *
+user1 = User.objects.create(username = 'Author1', password = 'pass1')
+user2 = User.objects.create(username= 'Author2', password = 'pass2')
+auth1 = Author.objects.create(user_id = 1)
+auth2 = Author.objects.create(user_id = 2)
+cat1 = Category.objects.create(name = 'Policy')
+cat2 = Category.objects.create(name = 'Culture')
+cat3 = Category.objects.create(name = 'Sport')
+cat4 = Category.objects.create(name = 'International news')
+
+from portal.resorcies import *
+post1 = Post.objects.create(post_auth = auth1, type = 'news', name = 'name1', text = 'text1')
+post2 = Post.objects.create(post_auth = auth2, type = 'post', name = 'name2', text = 'text2')
+post3 = Post.objects.create(post_auth = auth1, type = 'news', name = 'name3', text = 'text3')
+
+comm1 = Comment.objects.create(text = 'excellent', post = post1, user = user1)
+comm2 = Comment.objects.create(text = 'good', post = post1, user = user2)
+comm3 = Comment.objects.create(text = 'so-so', post = post2, user = user2)
+comm4 = Comment.objects.create(text = 'bad', post = post3, user = user1)
+
+list_for_like = [post1, post2, post3, comm1, comm2, comm3, comm4]
+for i in range(100):
+        random_obj = random.choice(list_for_like)
+        if i % 2:
+            random_obj.like()
+        else:
+            random_obj.dislike()
+
+rating_auth1 = (sum([post.rating*3 for post in Post.objects.filter(author = auth1)]) 
+                    + sum([comment.rating for comment in Comment.objects.filter(user = user1)]) 
+                    + sum([comment.rating for comment in Comment.objects.filter(post__author = auth1)]))
+auth1.update_rating(rating_auth1)
+    
+
+rating_auth2 = (sum([post.rating*3 for post in Post.objects.filter(author = auth1)]) 
+                    + sum([comment.rating for comment in Comment.objects.filter(user=tommy.user2)]) 
+                    + sum([comment.rating for comment in Comment.objects.filter(post__author=auth2)]))
+auth2.update_rating(rating_auth2)
+
+best_author = Author.objects.all().order_by('-rating')[0]
+print("Лучший автор:", best_author.user.username, "Рейтинг:", best_author.rating)
+
+best_post = Post.objects.filter(post_type = Post.post).order_by('-rating')[0]
+print("Лучшая статья", best_post, "Дата:", best_article.add_time, "Автор:", best_article.post_auth.user.username, "Рейтинг:", best_article.rating, "Заголовок:", best_article.name)
+print("Превью:", best_article.preview())
+
+print("Комментарии к ней")
+    for comment in Comment.objects.filter(post = best_article):
+        print("Дата:", comment.add_time, "Автор:", comment.user.username, "Рейтинг:", comment.rating)
+        print("Комментарий:", comment.text)
+ 

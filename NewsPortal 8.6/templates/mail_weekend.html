@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Новые посты за неделю </title>
+</head>
+<body>
+<hr>
+
+<table>
+           <tr>
+               <td> Название </td>
+               <td> Дата добавления </td>
+               <td> Текст статьи </td>
+           </tr>
+
+           {% for post in news.add_time__lt %}
+           <tr>
+               <td>{{ post.name|censor }}</td>
+               <td>{{ post.add_time|date:'d M Y' }}</td>
+               <td>{{ post.text|truncatewords:20|censor }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+    <h5> {{ post }} </h5>
+    <h5> {{ link }} </h5>
+    <p>   </p>
+</body>
+</html>

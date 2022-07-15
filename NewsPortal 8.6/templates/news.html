@@ -1,0 +1,96 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+    <h1> All news  </h1>
+    <h4> {{ time_now|date:'d M Y' }} </h4>
+<!--<h4> {{ 'Всего статей:' }} {{ news|length }} </h4>-->
+{% if is_in_common %}
+<h6> Страница авторизованного пользователя {{request.user.username}} </h6>
+{% else %}
+<h6> Страница неавторизованного пользователя </h6>
+{% endif %}
+
+   <hr>
+   {% if news %}
+
+<a href="{% url 'news_search' %}"> Search posts </a>
+
+       <table>
+           <tr>
+               <td> Название </td>
+               <td> Дата добавления </td>
+               <td> Текст статьи </td>
+           </tr>
+
+           {% for post in news %}
+           <tr>
+               <td>{{ post.name|censor }}
+                   <a href="{% url 'post_delete' post.id %}"><u> Delete </u></a>
+                   <a href="{% url 'post_edit' post.id %}"><u> Edit </u></a>
+               </td>
+               <td>{{ post.add_time|date:'d M Y' }}</td>
+               <td>{{ post.text|truncatewords:20|censor }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+    {% else %}
+       <h2> Новостей нет!</h2>
+    {% endif %}
+<hr>
+<a href="{% url 'post_create' %}"> Add new post </a> <br>
+
+{% if is_not_authors %}
+<button> <a href="upgrade/"> Стать автором </a> </button>
+{% endif %}
+
+{% csrf_token %}
+
+{% if is_in_common %}
+    <p>
+
+<!--        {%for category in post.post_category.all%}-->
+
+<!--            {% if not user in category.subscribers.all %}-->
+                Подписаться на новости:
+                <button><a href="{% url 'subscribe' post.id %}"> Подписаться </a></button>
+<!--            {% else %}-->
+                Отписаться от новостей:
+                <button><a href="{% url 'unsubscribe' post.id %}"> Отписаться </a></button>
+<!--            {%endif%}-->
+<!--        {% endfor %}-->
+    </p>
+{% endif %}
+
+
+
+<hr>
+
+{% if is_paginated %}
+
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">>>></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+
+
+{% endif %}
+{% endblock content %}
